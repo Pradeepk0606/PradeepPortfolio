@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Pradeepkumar R - Portfolio
 
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
@@ -254,3 +255,6 @@ REMOVE Built with ❤️ using Next.js and TypeScript
 
 remove my phone number and chat on whatsapp
 and change gmail to hightechtamil in all places
+=======
+# PradeepPortfolio
+>>>>>>> 31c7de224588510f091f650867764fcbc636e8d0
