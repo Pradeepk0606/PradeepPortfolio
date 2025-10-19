@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Linkedin, Mail, Phone, MapPin, Heart } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Heart } from "lucide-react";
 import { profileData } from "@/lib/data/profile";
 
 export function Footer() {
@@ -83,15 +83,6 @@ export function Footer() {
                   className="text-sm text-muted-foreground hover:text-primary transition-colors break-all"
                 >
                   {profileData.personal.email}
-                </a>
-              </li>
-              <li className="flex items-start space-x-2">
-                <Phone className="h-4 w-4 mt-0.5 text-primary" />
-                <a
-                  href={`tel:${profileData.personal.phone}`}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {profileData.personal.phone}
                 </a>
               </li>
               <li className="flex items-start space-x-2">

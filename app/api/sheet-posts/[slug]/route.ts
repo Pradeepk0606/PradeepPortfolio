@@ -2,6 +2,23 @@ import { NextResponse } from 'next/server';
 
 const SHEET_BEST_URL = `https://api.sheetbest.com/sheets/69db8261-4b92-424e-ad16-e5f0ae7f53e8`;
 
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  try {
+    const response = await fetch(SHEET_BEST_URL);
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts from SheetBest');
+    }
+    const data = await response.json();
+    return data.map((post: any) => ({
+      slug: post.slug || ''
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
