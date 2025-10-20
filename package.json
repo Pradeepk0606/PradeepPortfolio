@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "next lint",
     "preview": "npx serve out",
-    "deploy": "firebase deploy"
+    "postexport": "node -e \"require('fs').writeFileSync('out/.nojekyll','')\"",
+    "predeploy": "npm run build:static && npm run postexport",
+    "deploy": "gh-pages -d out -b gh-pages"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.0",
@@ -63,6 +65,7 @@
     "@types/prop-types": "^15.7.15",
     "cross-env": "^10.1.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "gh-pages": "^6.3.0"
   }
 }
