@@ -3,6 +3,8 @@ import connectDB from "@/lib/db/mongoose";
 import Contact from "@/lib/db/models/Contact";
 import nodemailer from "nodemailer";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { name, email, subject, message } = await req.json();
@@ -15,16 +17,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Connect to database
-    await connectDB();
-
-    // Save to database
-    const contact = await Contact.create({
-      name,
-      email,
-      subject,
-      message,
-    });
+    // Connect to database (optional)
+    let contactId: string | undefined = undefined;
+    if (process.env.MONGODB_URI) {
+      await connectDB();
+      const contact = await Contact.create({
+        name,
+        email,
+        subject,
+        message,
+      });
+      contactId = contact._id?.toString();
+    }
 
     // Send email notification via EmailJS first (if configured), then fallback to Nodemailer
     let emailSent = false;
@@ -130,8 +134,7 @@ export async function POST(req: NextRequest) {
         message: emailSent
           ? "Message saved and emails sent."
           : "Message saved. Email not sent (email service not configured).",
-        id: contact._id,
-        emailSent,
+        id: contactId,
       },
       { status: 200 }
     );
@@ -146,6 +149,9 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json([]);
+    }
     await connectDB();
     const contacts = await Contact.find().sort({ createdAt: -1 });
     return NextResponse.json(contacts);

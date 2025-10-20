@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { env } from '@/lib/env';
 
+export const dynamic = 'force-dynamic';
+
 const SHEET_BEST_URL = `https://api.sheetbest.com/sheets/${process.env.SHEET_BEST_ID}`;
 
 export async function GET() {

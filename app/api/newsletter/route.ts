@@ -3,6 +3,8 @@ import connectDB from "@/lib/db/mongoose";
 import Newsletter from "@/lib/db/models/Newsletter";
 import nodemailer from "nodemailer";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
@@ -14,29 +16,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await connectDB();
+    if (process.env.MONGODB_URI) {
+      await connectDB();
+    }
 
-    // Check if email already exists
-    const existing = await Newsletter.findOne({ email });
-    if (existing) {
-      if (existing.subscribed) {
-        return NextResponse.json(
-          { error: "Email already subscribed" },
-          { status: 400 }
-        );
-      } else {
-        // Resubscribe
-        existing.subscribed = true;
-        await existing.save();
-        return NextResponse.json(
-          { message: "Successfully resubscribed!" },
-          { status: 200 }
-        );
+    // Check if email already exists (only when DB configured)
+    if (process.env.MONGODB_URI) {
+      const existing = await Newsletter.findOne({ email });
+      if (existing) {
+        if (existing.subscribed) {
+          return NextResponse.json(
+            { error: "Email already subscribed" },
+            { status: 400 }
+          );
+        } else {
+          // Resubscribe
+          existing.subscribed = true;
+          await existing.save();
+          return NextResponse.json(
+            { message: "Successfully resubscribed!" },
+            { status: 200 }
+          );
+        }
       }
     }
 
     // Create new subscription
-    await Newsletter.create({ email });
+    if (process.env.MONGODB_URI) {
+      await Newsletter.create({ email });
+    }
 
     // Attempt EmailJS first (if configured), then fallback to Nodemailer
     let emailSent = false;
