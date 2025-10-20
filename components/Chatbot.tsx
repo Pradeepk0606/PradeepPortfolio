@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { profileData } from "@/lib/data/profile";
 
 interface Message {
   role: "user" | "assistant";
@@ -18,17 +19,19 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm Pradeep's AI assistant. Ask me anything about his skills, projects, or experience!",
+      content:
+        "Hello! I’m Pradeep’s portfolio assistant. Ask me about his summary, skills, projects, education, achievements/certificates, or contact info. I can only answer questions related to Pradeep’s portfolio.",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const quickQuestions = [
-    "What are your skills?",
-    "Tell me about your projects",
-    "What's your experience?",
-    "How can I contact you?",
+    "Overview",
+    "Show skills",
+    "List projects",
+    "Education details",
+    "How to contact?",
   ];
 
   const handleSend = async (message?: string) => {
@@ -39,30 +42,117 @@ export function Chatbot() {
     setInput("");
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual API call)
+    // Simulated deterministic response based on portfolio data only
     setTimeout(() => {
-      const response = generateResponse(userMessage);
+      const base = generateResponse(userMessage);
+      const followUp =
+        "\n\nWhat would you like to explore next? You can ask: Overview, Show skills, List projects, Education details, How to contact?";
+      const response = `${base}${followUp}`;
       setMessages((prev) => [...prev, { role: "assistant", content: response }]);
       setIsLoading(false);
-    }, 1000);
+    }, 400);
   };
 
   const generateResponse = (question: string): string => {
     const q = question.toLowerCase();
 
-    if (q.includes("skill")) {
-      return "I'm proficient in MERN Stack (MongoDB, Express.js, React.js, Node.js), Python, Java, and JavaScript. I also work with databases like MySQL and MongoDB, and tools like Git, Figma, and Firebase.";
-    } else if (q.includes("project")) {
-      return "I've built several impactful projects including a Smart Competency Diagnostic tool, a Hospital Management System with predictive analytics, and a Blockchain-based Herbal Traceability System. Check out the Projects section for more details!";
-    } else if (q.includes("experience") || q.includes("internship")) {
-      return "I've completed internships at MindFulAi as a Full Stack Developer and at Internpe as a Python Developer. I've worked on MERN stack applications, ML-based tools, and authentication systems.";
-    } else if (q.includes("contact") || q.includes("reach")) {
-      return "You can reach me at Pradeeprajamanickam1234@gmail.com or call me at +91 9360541675. I'm also available on LinkedIn and GitHub!";
-    } else if (q.includes("education")) {
-      return "I'm currently pursuing B.E. in Computer Science at SNS College of Engineering with a CGPA of 8.50. I completed my HSC with 81.83%.";
-    } else {
-      return "That's an interesting question! Feel free to explore my portfolio sections for detailed information, or ask me something specific about my skills, projects, or experience.";
+    // Overview: compile full template in one reply
+    if (q.includes("overview") || q.includes("all details") || q.includes("full details")) {
+      const about = profileData.summary.trim();
+      const prog = profileData.skills.programming.map((s) => s.name).join(", ");
+      const web = profileData.skills.web.map((s) => s.name).join(", ");
+      const db = profileData.skills.database.map((s) => s.name).join(", ");
+      const tools = profileData.skills.tools.map((s) => s.name).join(", ");
+      const soft = profileData.skills.soft.join(", ");
+      const projects = profileData.projects
+        .map((p, i) => `${i + 1}. ${p.title} – ${p.description}`)
+        .join("\n");
+      const education = profileData.education
+        .map((e) => `${e.degree}, ${e.institution} (${e.period})${e.grade ? ` – ${e.grade}` : ""}`)
+        .join("\n");
+      const certs = profileData.certifications
+        .map((c) => `${c.title} – ${c.issuer} (${c.date})`)
+        .join("\n");
+      const ach = profileData.achievements
+        .map((a) => `${a.title} – ${a.organization} (${a.date})`)
+        .join("\n");
+      const email = profileData.personal.email;
+      const linkedin = profileData.social.linkedin;
+      const github = profileData.social.github;
+
+      return [
+        `ABOUT\n${about}`,
+        `SKILLS\nTechnical: ${prog}\nWeb: ${web}\nDatabase: ${db}\nTools: ${tools}\nSoft skills: ${soft}`,
+        `PROJECTS\n${projects || "No projects available right now."}`,
+        `EDUCATION\n${education || "No education info available."}`,
+        `ACHIEVEMENTS / CERTIFICATES\nCertificates:\n${certs || "-"}\n\nAchievements:\n${ach || "-"}`,
+        `CONTACT\nEmail – ${email}\nLinkedIn – ${linkedin}\nGitHub – ${github}`,
+      ].join("\n\n");
     }
+
+    // About/Summary
+    if (q.includes("about") || q.includes("summary")) {
+      return profileData.summary.trim();
+    }
+
+    // Skills
+    if (q.includes("skill") || q === "show skills") {
+      const prog = profileData.skills.programming.map((s) => s.name).join(", ");
+      const web = profileData.skills.web.map((s) => s.name).join(", ");
+      const db = profileData.skills.database.map((s) => s.name).join(", ");
+      const tools = profileData.skills.tools.map((s) => s.name).join(", ");
+      const soft = profileData.skills.soft.join(", ");
+      return `Technical: ${prog}. Web: ${web}. DB: ${db}. Tools: ${tools}. Soft skills: ${soft}.`;
+    }
+
+    // Projects
+    if (q.includes("project") || q === "list projects") {
+      const list = profileData.projects
+        .map((p, i) => `${i + 1}. ${p.title} – ${p.description}`)
+        .join("\n");
+      return list || "No projects available right now.";
+    }
+
+    // Education
+    if (q.includes("education") || q.includes("degree")) {
+      const list = profileData.education
+        .map((e) => `${e.degree}, ${e.institution} (${e.period})${e.grade ? ` – ${e.grade}` : ""}`)
+        .join("\n");
+      return list || "No education info available.";
+    }
+
+    // Achievements / Certifications
+    if (q.includes("achievement") || q.includes("certificate") || q.includes("certification")) {
+      const certs = profileData.certifications
+        .map((c) => `${c.title} – ${c.issuer} (${c.date})`)
+        .join("\n");
+      const ach = profileData.achievements
+        .map((a) => `${a.title} – ${a.organization} (${a.date})`)
+        .join("\n");
+      const combined = [certs && `Certificates:\n${certs}`, ach && `Achievements:\n${ach}`]
+        .filter(Boolean)
+        .join("\n\n");
+      return combined || "No achievements or certificates listed.";
+    }
+
+    // Contact / Connect
+    if (q.includes("contact") || q.includes("connect") || q.includes("reach") || q === "how to contact?") {
+      const email = profileData.personal.email;
+      const linkedin = profileData.social.linkedin;
+      const github = profileData.social.github;
+      return `You can reach Pradeep via email: ${email}. LinkedIn: ${linkedin}. GitHub: ${github}.`;
+    }
+
+    // Internships / Experience (from data)
+    if (q.includes("internship") || q.includes("experience")) {
+      const list = profileData.internships
+        .map((i) => `${i.company} – ${i.role} (${i.period}, ${i.duration})`)
+        .join("\n");
+      return list || "No internships listed.";
+    }
+
+    // Fallback strictly
+    return "I can only answer questions related to Pradeep’s portfolio.";
   };
 
   return (
@@ -129,7 +219,7 @@ export function Chatbot() {
                             : "bg-secondary text-secondary-foreground"
                         }`}
                       >
-                        <p className="text-sm">{message.content}</p>
+                        <p className={`text-sm ${message.role === "assistant" ? "whitespace-pre-wrap" : ""}`}>{message.content}</p>
                       </div>
                     </div>
                   ))}
@@ -143,24 +233,22 @@ export function Chatbot() {
                 </div>
 
                 {/* Quick Questions */}
-                {messages.length === 1 && (
-                  <div className="px-4 pb-3 space-y-2">
-                    <p className="text-xs text-muted-foreground">Quick questions:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {quickQuestions.map((question) => (
-                        <Button
-                          key={question}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleSend(question)}
-                          className="text-xs"
-                        >
-                          {question}
-                        </Button>
-                      ))}
-                    </div>
+                <div className="px-4 pb-3 space-y-2">
+                  <p className="text-xs text-muted-foreground">Quick questions:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {quickQuestions.map((question) => (
+                      <Button
+                        key={question}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSend(question)}
+                        className="text-xs"
+                      >
+                        {question}
+                      </Button>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {/* Input */}
                 <div className="p-4 border-t">

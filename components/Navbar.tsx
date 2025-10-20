@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Code2 } from "lucide-react";
+import { Menu, X, Code2, Linkedin } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "./ui/Button";
 import { cn } from "@/lib/utils";
+import { profileData } from "@/lib/data/profile";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -19,7 +20,11 @@ const navItems = [
   { name: "Contact", href: "#contact" },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  authComponent?: React.ReactNode;
+}
+
+export function Navbar({ authComponent }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -61,28 +66,37 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
+          <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-center space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2",
+                    (pathname === item.href || 
+                     (pathname.startsWith('/blog') && item.href === '/blog')) 
+                      ? "bg-accent text-accent-foreground" 
+                      : "text-foreground/60 hover:text-foreground/80"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
               <Link
-                key={item.name}
-                href={item.href}
-                onClick={(e) => {
-                  if (item.href.startsWith("#")) {
-                    e.preventDefault();
-                    handleNavClick(item.href);
-                  }
-                }}
-                className={cn(
-                  "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  pathname === item.href || (item.href.startsWith("#") && pathname === "/")
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
+                href={profileData.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground hover:text-primary transition-colors"
+                aria-label="LinkedIn"
+                title="LinkedIn"
               >
-                {item.name}
+                <Linkedin className="h-5 w-5" />
               </Link>
-            ))}
-            <ThemeToggle />
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -117,15 +131,24 @@ export function Navbar() {
                   }
                 }}
                 className={cn(
-                  "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                  pathname === item.href || (item.href.startsWith("#") && pathname === "/")
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  pathname === item.href
+                    ? "bg-accent text-accent-foreground"
+                    : "text-foreground/70 hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 {item.name}
               </Link>
             ))}
+            <Link
+              href={profileData.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 text-foreground/80 hover:text-primary"
+            >
+              <Linkedin className="h-4 w-4" />
+              <span>LinkedIn</span>
+            </Link>
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { GitHubWidget, SpotifyWidget, CodingStatsWidget } from "@/components/IntegrationWidgets";
+import { GitHubWidget, CodingStatsWidget } from "@/components/IntegrationWidgets";
 
 export function Integrations() {
   const [ref, inView] = useInView({
@@ -41,14 +41,6 @@ export function Integrations() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <SpotifyWidget />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
           >
             <CodingStatsWidget />
           </motion.div>

@@ -4,7 +4,7 @@ export const profileData = {
     tagline: "Innovating with Code, Designing with Purpose.",
     email: "hightechtamil@gmail.com",
     location: "Coimbatore, India",
-    linkedin: "https://linkedin.com/in/PradeepKumarR",
+    linkedin: "https://www.linkedin.com/in/pradeepk143",
     github: "https://github.com/Pradeepk0606",
     avatar: "/images/profile.jpg",
   },
@@ -123,7 +123,7 @@ export const profileData = {
       The system evaluates multiple competency parameters and generates comprehensive profile scores, helping HR teams make data-driven hiring decisions.`,
       tech: ["Python", "SQL", "Machine Learning", "Scikit-learn", "Pandas"],
       category: ["AI", "Web"],
-      image: "/images/projects/competency.jpg",
+      image: "/projects/Career Guidance.png",
       github: "#",
       demo: "#",
       featured: true,
@@ -143,7 +143,7 @@ export const profileData = {
       The system uses machine learning to forecast patient admissions and optimize hospital operations.`,
       tech: ["React", "Node.js", "PostgreSQL", "Python", "TensorFlow", "REST APIs"],
       category: ["Web", "AI"],
-      image: "/images/projects/hospital.jpg",
+      image: "/projects/MAC portal.jpg",
       github: "#",
       demo: "#",
       featured: true,
@@ -163,7 +163,7 @@ export const profileData = {
       Features QR code scanning, smart contracts, and immutable record keeping.`,
       tech: ["Blockchain", "Solidity", "Web3.js", "React", "Node.js", "Smart Contracts"],
       category: ["Blockchain", "Web"],
-      image: "/images/projects/blockchain.jpg",
+      image: "/projects/Ayurchain trace.png",
       github: "#",
       demo: "#",
       featured: true,
@@ -174,6 +174,7 @@ export const profileData = {
         authenticity: "100%",
       },
     },
+    
   ],
   
   internships: [
@@ -280,7 +281,7 @@ export const profileData = {
   
   social: {
     github: "https://github.com/Pradeepk0606",
-    linkedin: "https://linkedin.com/in/PradeepKumarR",
+    linkedin: "https://www.linkedin.com/in/pradeepk143",
     twitter: "#",
     instagram: "#",
     youtube: "#",

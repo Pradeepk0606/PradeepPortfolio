@@ -80,11 +80,19 @@ export function Projects() {
                     className="relative h-48 bg-gradient-to-br from-primary/20 to-purple-500/20 overflow-hidden"
                     onClick={() => setSelectedProject(project)}
                   >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-6xl font-bold text-white/10">
-                        {project.title.charAt(0)}
+                    {project.image ? (
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-6xl font-bold text-white/10">
+                          {project.title.charAt(0)}
+                        </div>
                       </div>
-                    </div>
+                    )}
                     {project.featured && (
                       <Badge className="absolute top-4 right-4">Featured</Badge>
                     )}
@@ -173,11 +181,21 @@ export function Projects() {
                 </div>
 
                 <div className="p-6 space-y-6">
-                  {/* Hero Image Placeholder */}
-                  <div className="h-64 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center">
-                    <div className="text-8xl font-bold text-white/10">
-                      {selectedProject.title.charAt(0)}
-                    </div>
+                  {/* Hero Image */}
+                  <div className="h-64 rounded-lg overflow-hidden bg-secondary/30">
+                    {selectedProject.image ? (
+                      <img
+                        src={selectedProject.image}
+                        alt={selectedProject.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center">
+                        <div className="text-8xl font-bold text-white/10">
+                          {selectedProject.title.charAt(0)}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Description */}
@@ -188,16 +206,7 @@ export function Projects() {
                     </p>
                   </div>
 
-                  {/* Impact & Metrics */}
-                  {selectedProject.impact && (
-                    <div>
-                      <h4 className="text-lg font-semibold mb-3">Impact</h4>
-                      <div className="flex items-center space-x-2 text-primary">
-                        <TrendingUp className="h-5 w-5" />
-                        <span className="font-medium">{selectedProject.impact}</span>
-                      </div>
-                    </div>
-                  )}
+                  {/* Metrics */}
 
                   {selectedProject.metrics && (
                     <div className="grid grid-cols-3 gap-4">

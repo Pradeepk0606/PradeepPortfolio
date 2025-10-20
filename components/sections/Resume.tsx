@@ -30,7 +30,7 @@ export function Resume() {
           <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
             Education and professional experience
           </p>
-          <a href="/resume/Pradeepkumar_R_Resume.pdf" download className="inline-block">
+          <a href="/documents/resume.pdf" download="Pradeepkumar_R_Resume.pdf" className="inline-block">
             <Button size="lg" className="group">
               <Download className="mr-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
               Download Resume

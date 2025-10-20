@@ -11,10 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: npm ci
+      - run: npm run dev
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRADEEP_PORTFOLIO_389C3 }}
           channelId: live
           projectId: pradeep-portfolio-389c3
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks

@@ -1,22 +1,58 @@
 import { notFound } from "next/navigation";
 import { getBlogPost, getAllBlogPosts } from "@/lib/blog";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Heart } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Eye, Heart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 
-// This function tells Next.js which paths to pre-render at build time
+// Revalidation time in seconds (1 hour)
+const REVALIDATION_TIME = 3600;
+
+// Generate static params for all blog posts
 export async function generateStaticParams() {
-  const posts = await getAllBlogPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const posts = await getAllBlogPosts();
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
-// Revalidate this page every hour
-export const revalidate = 3600;
+// Generate metadata for better SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await getBlogPost(params.slug);
+  
+  if (!post) {
+    return {
+      title: 'Post Not Found - Pradeep Kumar',
+      description: 'The requested blog post could not be found.',
+    };
+  }
+
+  return {
+    title: `${post.title} - Pradeep Kumar`,
+    description: post.excerpt || 'Read this blog post on Pradeep Kumar\'s blog',
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || '',
+      type: 'article',
+      publishedTime: post.createdAt,
+      authors: ['Pradeep Kumar'],
+    },
+  };
+}
+
+export const revalidate = REVALIDATION_TIME;
 
 export default async function BlogPostPage({
   params,
@@ -24,17 +60,37 @@ export default async function BlogPostPage({
   params: { slug: string };
 }) {
   const { slug } = params;
-  const blog = await getBlogPost(slug);
+  let post;
 
-  if (!blog) {
+  try {
+    // In production, try to fetch from API first
+    if (process.env.NODE_ENV === 'production') {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/blog?slug=${slug}`, 
+        { next: { revalidate: REVALIDATION_TIME } }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        post = data.post;
+      }
+    }
+    
+    // If post not found via API or in development, try direct data fetching
+    if (!post) {
+      post = await getBlogPost(slug);
+    }
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    post = await getBlogPost(slug);
+  }
+
+  if (!post) {
     notFound();
   }
 
-  // Format the date
-  const formattedDate = format(new Date(blog.createdAt), 'MMMM d, yyyy');
-  
-  // Calculate read time
-  const readTime = Math.ceil(blog.content.split(/\s+/).length / 200);
+  const formattedDate = format(parseISO(post.createdAt), 'MMMM d, yyyy');
+  const readTime = Math.ceil(post.content.split(/\s+/).length / 200);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -47,37 +103,62 @@ export default async function BlogPostPage({
         </Link>
 
         <article>
+          {post.coverImage && (
+            <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden mb-8">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                width={1200}
+                height={630}
+                className="object-cover w-full h-full"
+                priority
+              />
+            </div>
+          )}
+          
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
-            <div className="flex items-center text-sm text-muted-foreground mb-6">
-              <div className="flex items-center mr-4">
-                <Calendar className="h-4 w-4 mr-1" />
-                {formattedDate}
-              </div>
-              <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-1" />
-                {readTime} min read
-              </div>
-              {blog.views !== undefined && (
-                <div className="flex items-center ml-4">
-                  <Clock className="h-4 w-4 mr-1" />
-                  {blog.views} views
+            <div className="flex items-center gap-4 mb-6">
+              {post.author?.avatar && (
+                <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                  <Image
+                    src={post.author.avatar}
+                    alt={post.author.name}
+                    width={48}
+                    height={48}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
               )}
-            </div>
-            {blog.tags && blog.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {blog.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
+              <div>
+                <p className="font-medium text-foreground">
+                  {post.author?.name || 'Anonymous'}
+                </p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formattedDate}</span>
+                  <span>•</span>
+                  <Clock className="h-4 w-4" />
+                  <span>{readTime} min read</span>
+                  <span>•</span>
+                  <Eye className="h-4 w-4" />
+                  <span>{post.views || 0} views</span>
+                </div>
               </div>
-            )}
+            </div>
+
+            <h1 className="text-4xl font-bold mb-6">{post.title}</h1>
+            
+            <div className="flex flex-wrap gap-2 mb-8">
+              {(post.tags || []).map((tag: string) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
           </header>
 
           <div className="prose dark:prose-invert max-w-none">
-            <ReactMarkdown>{blog.content}</ReactMarkdown>
+            <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
 
           <div className="mt-12 pt-8 border-t border-border">
@@ -88,12 +169,12 @@ export default async function BlogPostPage({
                   Back to Blog
                 </Button>
               </Link>
-              {blog.likes !== undefined && (
-                <Button variant="ghost" className="gap-2">
-                  <Heart className="h-5 w-5 text-foreground" />
-                  {blog.likes}
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="gap-1">
+                  <Heart className="h-4 w-4" />
+                  <span>{post.likes || 0}</span>
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         </article>

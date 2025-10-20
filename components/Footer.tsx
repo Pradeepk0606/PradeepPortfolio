@@ -102,7 +102,7 @@ export function Footer() {
               © {currentYear} Pradeepkumar R. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center">
-              Made with <Heart className="h-4 w-4 mx-1 text-red-500 fill-current" /> using Next.js & TypeScript
+              Designed and engineered by Pradeepkumar R <Heart className="h-4 w-4 mx-1 text-red-500 fill-current" /> Innovating with Code, Designing with Purpose
             </p>
           </div>
         </div>
