@@ -5,7 +5,6 @@ const nextConfig = {
   swcMinify: true,
   // Configure base path and asset prefix for GitHub Pages project site
   basePath: isProd ? '/PradeepPortfolio' : '',
-  assetPrefix: isProd ? '/PradeepPortfolio/' : '',
   trailingSlash: true,
   output: 'export',
   images: {

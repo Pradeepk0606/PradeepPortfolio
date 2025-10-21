@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:static": "cross-env NODE_ENV=production next build && next export -o out",
-    "export": "next export -o out",
+    "build:static": "cross-env NODE_ENV=production next build",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint",
     "preview": "npx serve out",
     "postexport": "node -e \"require('fs').writeFileSync('out/.nojekyll','')\"",
-    "predeploy": "npm run build:static && npm run postexport",
+    "predeploy": "node scripts/export-prepare.js && npm run build:static && npm run postexport && node scripts/export-restore.js",
     "deploy": "gh-pages -d out -b gh-pages"
   },
   "dependencies": {

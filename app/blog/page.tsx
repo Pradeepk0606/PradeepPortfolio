@@ -25,30 +25,9 @@ export const metadata = {
 export const revalidate = REVALIDATION_TIME;
 
 export default async function BlogListPage() {
-  let posts;
-  
-  try {
-    // In production, use the API endpoint
-    if (process.env.NODE_ENV === 'production') {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/blog`, {
-        next: { revalidate: REVALIDATION_TIME }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        posts = data.posts || [];
-      } else {
-        throw new Error('Failed to fetch blog posts from API');
-      }
-    } else {
-      // In development, use direct data fetching
-      posts = await getAllBlogPosts();
-    }
-  } catch (error) {
-    console.error('Error fetching blog posts:', error);
-    // Fallback to direct data fetching if API fails
-    posts = await getAllBlogPosts();
-  }
+  let posts: BlogPost[] = [];
+  // Always use local data helpers during static export to avoid network calls
+  posts = await getAllBlogPosts();
   
   if (!posts || posts.length === 0) {
     notFound();

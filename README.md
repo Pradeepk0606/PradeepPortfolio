@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# 🚀 Pradeepkumar R - Portfolio
+# PradeepPortfolio
 
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -75,7 +74,7 @@ NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_nextauth_secret
 
 # Email (Nodemailer)
-EMAIL_USER=your_email@gmail.com
+EMAIL_USER=hightechtamil@gmail.com
 EMAIL_PASS=your_app_password
 
 # OAuth Providers
@@ -125,7 +124,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✅ **Blog**: Full-featured blog with MDX support
 - ✅ **Achievements**: Gamified badges and stats
 - ✅ **Testimonials**: Client recommendations
-- ✅ **Contact**: Animated form with WhatsApp integration
+- ✅ **Contact**: Animated contact form
 
 ### ⚙️ Backend & Data
 - ✅ **Admin Dashboard**: Content management system
@@ -136,9 +135,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### 🌍 Integrations
 - ✅ **GitHub**: Live repo stats and contributions
-- ✅ **Spotify**: Currently playing widget
-- ✅ **LeetCode/Codeforces**: Coding stats
-- ✅ **AI Chatbot**: Interactive portfolio assistant
+- ✅ **Spotify**: Shows currently playing track
+- ✅ **LeetCode**: Displays coding stats
 
 ### 🎯 Advanced Features
 - ✅ **Dark/Light Theme**: Persistent theme toggle
@@ -246,15 +244,5 @@ MIT License - feel free to use this for your own portfolio!
 
 **Pradeepkumar R**
 - Email: hightechtamil@gmail.com
-- LinkedIn: [linkedin.com/in/PradeepKumarR](https://linkedin.com/in/PradeepKumarR)
+- LinkedIn: [linkedin.com/in/pradeepk143](https://www.linkedin.com/in/pradeepk143)
 - GitHub: [github.com/Pradeepk0606](https://github.com/Pradeepk0606)
-
----
-
-REMOVE Built with ❤️ using Next.js and TypeScript
-
-remove my phone number and chat on whatsapp
-and change gmail to hightechtamil in all places
-=======
-# PradeepPortfolio
->>>>>>> 31c7de224588510f091f650867764fcbc636e8d0

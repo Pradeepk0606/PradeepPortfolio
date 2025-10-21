@@ -60,30 +60,8 @@ export default async function BlogPostPage({
   params: { slug: string };
 }) {
   const { slug } = params;
-  let post;
-
-  try {
-    // In production, try to fetch from API first
-    if (process.env.NODE_ENV === 'production') {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/blog?slug=${slug}`, 
-        { next: { revalidate: REVALIDATION_TIME } }
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        post = data.post;
-      }
-    }
-    
-    // If post not found via API or in development, try direct data fetching
-    if (!post) {
-      post = await getBlogPost(slug);
-    }
-  } catch (error) {
-    console.error('Error fetching blog post:', error);
-    post = await getBlogPost(slug);
-  }
+  // Always use local data helpers during static export to avoid network calls
+  const post = await getBlogPost(slug);
 
   if (!post) {
     notFound();
