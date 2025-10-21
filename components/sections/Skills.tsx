@@ -48,7 +48,7 @@ export function Skills() {
   ];
 
   return (
-    <section id="skills" className="py-20">
+    <section id="skills" className="py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
@@ -78,7 +78,7 @@ export function Skills() {
                 <CardTitle className="text-center">Skill Proficiency</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={220}>
                   <RadarChart data={radarData}>
                     <PolarGrid stroke="hsl(var(--border))" />
                     <PolarAngleAxis 

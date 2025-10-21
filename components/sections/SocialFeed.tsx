@@ -63,24 +63,24 @@ export function SocialFeed() {
   };
 
   return (
-    <section className="py-20">
+    <section className="py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
             Latest <span className="text-gradient">Activity</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
             My recent posts and contributions across social platforms
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* LinkedIn Posts */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -105,11 +105,11 @@ export function SocialFeed() {
                     ))}
                   </div>
                 ) : linkedInPosts.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-8">
+                  <p className="text-sm text-muted-foreground text-center py-6 md:py-8">
                     No LinkedIn posts yet. Configure LinkedIn API to see posts here.
                   </p>
                 ) : (
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                  <div className="space-y-4 max-h-[60vh] md:max-h-[600px] overflow-y-auto">
                     {linkedInPosts.map((post, index) => (
                       <motion.div
                         key={post.id}
@@ -119,7 +119,7 @@ export function SocialFeed() {
                       >
                         <Card className="card-hover">
                           <CardContent className="p-4">
-                            <p className="text-sm mb-3 line-clamp-3">{post.text}</p>
+                            <p className="text-sm md:text-base mb-3 line-clamp-3">{post.text}</p>
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                               <span>
                                 {formatDistanceToNow(new Date(post.createdAt), {
@@ -184,9 +184,7 @@ export function SocialFeed() {
                     ))}
                   </div>
                 ) : githubActivity.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    No recent GitHub activity found.
-                  </p>
+                  <GitHubFallback />
                 ) : (
                   <div className="space-y-4 max-h-[600px] overflow-y-auto">
                     {githubActivity.map((activity, index) => (
@@ -237,5 +235,69 @@ export function SocialFeed() {
         </div>
       </div>
     </section>
+  );
+}
+
+function GitHubFallback() {
+  const [repos, setRepos] = useState<Array<{ name: string; description: string; url: string; updatedAt: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch("/api/github");
+        const data = await res.json();
+        setRepos((data.repos || []).slice(0, 6));
+      } catch (e) {
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
+            <div className="h-4 bg-secondary rounded w-1/2" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!repos.length) {
+    return (
+      <p className="text-sm text-muted-foreground text-center py-6 md:py-8">
+        No recent GitHub activity found. Try adding a token in env to increase API limits.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {repos.map((repo) => (
+        <Card key={repo.name} className="card-hover">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between">
+              <div className="min-w-0 pr-3">
+                <p className="font-medium truncate">{repo.name}</p>
+                {repo.description && (
+                  <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{repo.description}</p>
+                )}
+                <p className="text-xs text-muted-foreground mt-2">Updated {formatDistanceToNow(new Date(repo.updatedAt), { addSuffix: true })}</p>
+              </div>
+              <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex-shrink-0 inline-flex items-center">
+                View Repository
+                <ExternalLink className="h-3 w-3 ml-1" />
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }

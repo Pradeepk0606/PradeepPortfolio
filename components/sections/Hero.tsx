@@ -63,7 +63,7 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center overflow-hidden">
       <ParticleBackground />
       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/40" />
       
@@ -74,15 +74,15 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="w-full md:w-1/2 space-y-6"
+            className="w-full md:w-1/2 space-y-5 md:space-y-6"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4">
+            <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-4">
               Hi, I'm{" "}
               <span className="text-gradient">{profileData.personal.name}</span>
             </h1>
 
-            <div className="h-16">
-              <p className="text-xl md:text-3xl text-muted-foreground">
+            <div className="h-14 md:h-16">
+              <p className="text-lg md:text-3xl text-muted-foreground">
                 I'm a{" "}
                 <span className="text-primary font-semibold">
                   {text}
@@ -91,11 +91,11 @@ export function Hero() {
               </p>
             </div>
 
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
               {profileData.summary}
             </p>
 
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap gap-3 md:gap-4 pt-4">
               <Button
                 size="lg"
                 className="group"

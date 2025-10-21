@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Chatbot } from "@/components/Chatbot";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 // Auth removed per request
 import DevSWCleanup from "@/components/DevSWCleanup";
@@ -67,6 +68,7 @@ export default function RootLayout({
                 },
               }}
             />
+            <Analytics />
           </ThemeProvider>
       </body>
     </html>
