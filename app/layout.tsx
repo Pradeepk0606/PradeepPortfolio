@@ -31,11 +31,6 @@ export const metadata: Metadata = {
     title: "Pradeepkumar R - Full Stack Developer",
     description: "Innovating with Code, Designing with Purpose",
   },
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
 };
 
 export default function RootLayout({

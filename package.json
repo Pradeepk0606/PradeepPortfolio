@@ -9,6 +9,7 @@
     "export": "next export",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest -c jest.config.ts",
     "preview": "npx serve out",
     "postexport": "node -e \"require('fs').writeFileSync('out/.nojekyll','')\"",
     "predeploy": "node scripts/export-prepare.js && npm run build:static && npm run postexport && node scripts/export-restore.js",
@@ -16,6 +17,8 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.0",
+    "@headlessui/react": "^2.2.9",
+    "@react-pdf/renderer": "^4.3.1",
     "@react-three/drei": "^9.102.0",
     "@react-three/fiber": "^8.16.0",
     "@types/bcryptjs": "^2.4.6",
@@ -63,11 +66,16 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.12",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
     "@types/lru-cache": "^7.10.9",
     "@types/prop-types": "^15.7.15",
     "cross-env": "^10.1.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5"
   }
 }

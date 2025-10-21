@@ -52,26 +52,27 @@ export function Certificates() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="flex flex-wrap items-center justify-between gap-3 mb-8"
+          className="flex flex-col gap-3 mb-8 sm:flex-row sm:items-center sm:justify-between"
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto whitespace-nowrap py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {categories.map((cat) => (
               <Button
                 key={cat}
+                size="sm"
                 variant={selectedCategory === cat ? "default" : "outline"}
                 onClick={() => setSelectedCategory(cat)}
-                className="rounded-full"
+                className="rounded-full text-xs px-3 py-1"
               >
                 {cat}
               </Button>
             ))}
           </div>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search title or issuer..."
-              className="pl-9 pr-3 py-2 rounded-md border bg-background w-64 max-w-full"
+              className="w-full sm:w-72 md:w-80 pl-9 pr-3 py-2 rounded-md border bg-background"
             />
             <Search className="h-4 w-4 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
           </div>
@@ -87,26 +88,26 @@ export function Certificates() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25, delay: idx * 0.05 }}
               >
-                <Card className="h-full card-hover group cursor-pointer overflow-hidden" onClick={() => setActive(item)}>
-                  <div className="relative h-56 bg-gradient-to-br from-primary/20 to-purple-500/20 overflow-hidden">
+                <Card className="h-full group cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-xl border border-transparent hover:border-primary/20" onClick={() => setActive(item)}>
+                  <div className="relative aspect-[16/10] bg-gradient-to-br from-primary/15 to-purple-500/15 overflow-hidden">
                     {item.kind === "image" ? (
                       <>
                         {!loaded.has(item.id) && (
-                          <div className="absolute inset-0 animate-pulse bg-secondary/60" />
+                          <div className="absolute inset-0 animate-pulse bg-secondary/50" />
                         )}
                         <img
                           src={encodeURI(item.href)}
                           alt={item.title}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                           onLoad={() => setLoaded((prev) => new Set(prev).add(item.id))}
                         />
                       </>
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="px-3 py-1 text-xs rounded bg-black/50 text-white">PDF</div>
+                        <div className="px-3 py-1 text-[10px] rounded-full bg-black/50 text-white">PDF</div>
                       </div>
                     )}
-                    <Badge className="absolute top-3 right-3">{item.category}</Badge>
+                    <Badge className="absolute top-3 right-3 text-[10px] px-2 py-0.5 rounded-full">{item.category}</Badge>
                   </div>
                   <CardHeader>
                     <CardTitle className="group-hover:text-primary transition-colors line-clamp-2">
@@ -119,7 +120,7 @@ export function Certificates() {
                     )}
                   </CardContent>
                 </Card>
-              </motion.div)
+              </motion.div>
             ))}
           </AnimatePresence>
         </div>

@@ -203,11 +203,11 @@ export function CodingStatsWidget() {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-secondary/50 rounded-lg">
-            <div className="text-2xl font-bold text-primary">500+</div>
+            <div className="text-2xl font-bold text-primary">100+</div>
             <div className="text-xs text-muted-foreground">Problems Solved</div>
           </div>
           <div className="text-center p-3 bg-secondary/50 rounded-lg">
-            <div className="text-2xl font-bold text-primary">1500+</div>
+            <div className="text-2xl font-bold text-primary">150+</div>
             <div className="text-xs text-muted-foreground">Rating</div>
           </div>
         </div>

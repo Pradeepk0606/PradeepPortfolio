@@ -97,12 +97,9 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-muted-foreground text-center md:text-left">
+          <div className="flex justify-center items-center">
+            <p className="text-sm text-muted-foreground text-center">
               © {currentYear} Pradeepkumar R. All rights reserved.
-            </p>
-            <p className="text-sm text-muted-foreground flex items-center">
-              Designed and engineered by Pradeepkumar R <Heart className="h-4 w-4 mx-1 text-red-500 fill-current" /> Innovating with Code, Designing with Purpose
             </p>
           </div>
         </div>
