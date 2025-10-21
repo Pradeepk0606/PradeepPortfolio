@@ -1,30 +1,28 @@
 import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
+import { Skills } from "@/components/sections/Skills";
 import { Certificates } from "@/components/sections/Certificates";
-import { Resume } from "@/components/sections/Resume";
-import { Achievements } from "@/components/sections/Achievements";
-import { Testimonials } from "@/components/sections/Testimonials";
+import { About } from "@/components/sections/About";
 import { SocialFeed } from "@/components/sections/SocialFeed";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { Achievements } from "@/components/sections/Achievements";
+import { Resume } from "@/components/sections/Resume";
 import { Integrations } from "@/components/sections/Integrations";
-import { Newsletter } from "@/components/Newsletter";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <About />
-      <Skills />
       <Projects />
+      <Skills />
       <Certificates />
-      <Resume />
-      <Achievements />
-      <Testimonials />
+      <About />
       <SocialFeed />
+      <Testimonials />
+      <Achievements />
+      <Resume />
       <Integrations />
-      <Newsletter />
       <Contact />
     </>
   );

@@ -11,11 +11,7 @@ import { certificateItems } from "@/lib/data/certificates";
 
 const categories = [
   "All",
-  "Certificate",
-  "Forage",
-  "Prepinsta",
-  "Publication",
-  "Project",
+  ...Array.from(new Set(certificateItems.map((i) => i.category))),
 ];
 
 export function Certificates() {
@@ -23,6 +19,7 @@ export function Certificates() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<typeof certificateItems[0] | null>(null);
+  const [loaded, setLoaded] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => {
     return certificateItems.filter((item) => {
@@ -91,9 +88,19 @@ export function Certificates() {
                 transition={{ duration: 0.25, delay: idx * 0.05 }}
               >
                 <Card className="h-full card-hover group cursor-pointer overflow-hidden" onClick={() => setActive(item)}>
-                  <div className="relative h-44 bg-gradient-to-br from-primary/20 to-purple-500/20 overflow-hidden">
+                  <div className="relative h-56 bg-gradient-to-br from-primary/20 to-purple-500/20 overflow-hidden">
                     {item.kind === "image" ? (
-                      <img src={item.href} alt={item.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <>
+                        {!loaded.has(item.id) && (
+                          <div className="absolute inset-0 animate-pulse bg-secondary/60" />
+                        )}
+                        <img
+                          src={encodeURI(item.href)}
+                          alt={item.title}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          onLoad={() => setLoaded((prev) => new Set(prev).add(item.id))}
+                        />
+                      </>
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="px-3 py-1 text-xs rounded bg-black/50 text-white">PDF</div>
@@ -112,7 +119,7 @@ export function Certificates() {
                     )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </motion.div)
             ))}
           </AnimatePresence>
         </div>
@@ -141,9 +148,9 @@ export function Certificates() {
                 </div>
                 <div className="w-full h-[80vh] bg-secondary/30">
                   {active.kind === "pdf" ? (
-                    <iframe src={active.href} className="w-full h-full border-0" title={active.title} />
+                    <iframe src={encodeURI(active.href)} className="w-full h-full border-0" title={active.title} />
                   ) : (
-                    <img src={active.href} alt={active.title} className="w-full h-full object-contain" />
+                    <img src={encodeURI(active.href)} alt={active.title} className="w-full h-full object-contain" />
                   )}
                 </div>
               </motion.div>

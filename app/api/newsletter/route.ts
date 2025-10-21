@@ -46,37 +46,14 @@ export async function POST(req: NextRequest) {
       await Newsletter.create({ email });
     }
 
-    // Attempt EmailJS first (if configured), then fallback to Nodemailer
     let emailSent = false;
 
-    const EJ_SERVICE = process.env.EMAILJS_SERVICE_ID;
-    const EJ_TEMPLATE_NEWS = process.env.EMAILJS_TEMPLATE_ID_NEWSLETTER; // newsletter template
-    const EJ_USER = process.env.EMAILJS_PUBLIC_KEY; // EmailJS public key
-
-    if (EJ_SERVICE && EJ_TEMPLATE_NEWS && EJ_USER) {
-      try {
-        const ejRes = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            service_id: EJ_SERVICE,
-            template_id: EJ_TEMPLATE_NEWS,
-            user_id: EJ_USER,
-            template_params: {
-              to_email: email,
-            },
-          }),
-        });
-        if (ejRes.ok) emailSent = true;
-      } catch (e) {
-        console.error("Newsletter EmailJS error:", e);
-      }
-    }
-
-    if (!emailSent && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       try {
         const transporter = nodemailer.createTransport({
-          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
           auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -104,6 +81,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if (!emailSent) {
+      const EJ_SERVICE = process.env.EMAILJS_SERVICE_ID;
+      const EJ_TEMPLATE_NEWS = process.env.EMAILJS_TEMPLATE_ID_NEWSLETTER;
+      const EJ_USER = process.env.EMAILJS_PUBLIC_KEY;
+
+      if (EJ_SERVICE && EJ_TEMPLATE_NEWS && EJ_USER) {
+        try {
+          const ejRes = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              service_id: EJ_SERVICE,
+              template_id: EJ_TEMPLATE_NEWS,
+              user_id: EJ_USER,
+              template_params: {
+                to_email: email,
+              },
+            }),
+          });
+          if (ejRes.ok) emailSent = true;
+        } catch (e) {
+          console.error("Newsletter EmailJS error:", e);
+        }
+      }
+    }
+
     return NextResponse.json(
       {
         message: emailSent
@@ -121,3 +124,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

@@ -30,65 +30,14 @@ export async function POST(req: NextRequest) {
       contactId = contact._id?.toString();
     }
 
-    // Send email notification via EmailJS first (if configured), then fallback to Nodemailer
     let emailSent = false;
 
-    const EJ_SERVICE = process.env.EMAILJS_SERVICE_ID;
-    const EJ_TEMPLATE_ADMIN = process.env.EMAILJS_TEMPLATE_ID_CONTACT; // admin notification
-    const EJ_TEMPLATE_CONFIRM = process.env.EMAILJS_TEMPLATE_ID_CONTACT_CONFIRM; // optional confirmation to sender
-    const EJ_USER = process.env.EMAILJS_PUBLIC_KEY; // EmailJS public key (user_id)
-
-    if (EJ_SERVICE && EJ_TEMPLATE_ADMIN && EJ_USER) {
-      try {
-        const ejRes = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            service_id: EJ_SERVICE,
-            template_id: EJ_TEMPLATE_ADMIN,
-            user_id: EJ_USER,
-            template_params: {
-              to_email: process.env.ADMIN_EMAIL || process.env.EMAIL_USER || email,
-              from_name: name,
-              from_email: email,
-              subject,
-              message,
-            },
-          }),
-        });
-        if (ejRes.ok) emailSent = true;
-      } catch (e) {
-        console.error("EmailJS admin send error:", e);
-      }
-
-      if (EJ_TEMPLATE_CONFIRM) {
-        try {
-          const ejRes2 = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              service_id: EJ_SERVICE,
-              template_id: EJ_TEMPLATE_CONFIRM,
-              user_id: EJ_USER,
-              template_params: {
-                to_email: email,
-                from_name: "Pradeepkumar R",
-                subject: `Thanks for reaching out!`,
-                message,
-              },
-            }),
-          });
-          if (ejRes2.ok) emailSent = true;
-        } catch (e) {
-          console.error("EmailJS confirm send error:", e);
-        }
-      }
-    }
-
-    if (!emailSent && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       try {
         const transporter = nodemailer.createTransport({
-          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
           auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -129,6 +78,60 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if (!emailSent) {
+      const EJ_SERVICE = process.env.EMAILJS_SERVICE_ID;
+      const EJ_TEMPLATE_ADMIN = process.env.EMAILJS_TEMPLATE_ID_CONTACT;
+      const EJ_TEMPLATE_CONFIRM = process.env.EMAILJS_TEMPLATE_ID_CONTACT_CONFIRM;
+      const EJ_USER = process.env.EMAILJS_PUBLIC_KEY;
+
+      if (EJ_SERVICE && EJ_TEMPLATE_ADMIN && EJ_USER) {
+        try {
+          const ejRes = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              service_id: EJ_SERVICE,
+              template_id: EJ_TEMPLATE_ADMIN,
+              user_id: EJ_USER,
+              template_params: {
+                to_email: process.env.ADMIN_EMAIL || process.env.EMAIL_USER || email,
+                from_name: name,
+                from_email: email,
+                subject,
+                message,
+              },
+            }),
+          });
+          if (ejRes.ok) emailSent = true;
+        } catch (e) {
+          console.error("EmailJS admin send error:", e);
+        }
+
+        if (!emailSent && EJ_TEMPLATE_CONFIRM) {
+          try {
+            const ejRes2 = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                service_id: EJ_SERVICE,
+                template_id: EJ_TEMPLATE_CONFIRM,
+                user_id: EJ_USER,
+                template_params: {
+                  to_email: email,
+                  from_name: "Pradeepkumar R",
+                  subject: `Thanks for reaching out!`,
+                  message,
+                },
+              }),
+            });
+            if (ejRes2.ok) emailSent = true;
+          } catch (e) {
+            console.error("EmailJS confirm send error:", e);
+          }
+        }
+      }
+    }
+
     return NextResponse.json(
       {
         message: emailSent
@@ -162,3 +165,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+

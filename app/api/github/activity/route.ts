@@ -7,6 +7,7 @@ export async function GET() {
 
     const headers: HeadersInit = {
       Accept: "application/vnd.github.v3+json",
+      "User-Agent": "pradeep-portfolio-app",
     };
 
     if (token) {
