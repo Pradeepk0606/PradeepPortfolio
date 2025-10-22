@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/Button";
 
 const ResumePdf = dynamic(() => import("@/components/ResumePdf"), { ssr: false });
 
-export const metadata = { title: "Resume" };
-
 export default function ResumePage() {
   return (
     <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
