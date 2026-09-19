@@ -2,19 +2,18 @@ import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
-  );
-}
-
-let cached = global.mongoose;
+let cached = (global as any).mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
+  if (!MONGODB_URI) {
+    console.warn('MongoDB not connected (MONGODB_URI missing) — using fallback');
+    return null;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -23,9 +22,13 @@ async function dbConnect() {
     const opts = {
       bufferCommands: false,
     };
+    mongoose.set('bufferCommands', false);
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
-      return mongoose;
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => {
+      return m;
+    }).catch(err => {
+      console.warn('MongoDB connection error:', err);
+      return null;
     });
   }
 
@@ -33,7 +36,8 @@ async function dbConnect() {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    throw e;
+    console.warn('MongoDB connect failed:', e);
+    return null;
   }
 
   return cached.conn;

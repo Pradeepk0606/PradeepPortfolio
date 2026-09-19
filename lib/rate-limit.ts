@@ -1,27 +1,34 @@
-import { LRUCache } from 'lru-cache';
-
 type Options = {
   uniqueTokenPerInterval?: number;
   interval?: number;
 };
 
 export default function rateLimit(options?: Options) {
-  const tokenCache = new LRUCache({
-    max: options?.uniqueTokenPerInterval || 500,
-    ttl: options?.interval || 60000,
-  });
+  const tokenCache = new Map<string, { count: number; expiry: number }>();
+  const max = options?.uniqueTokenPerInterval || 500;
+  const ttl = options?.interval || 60000;
 
   return {
-    check: (req: Request, limit: number, token: string) => 
+    check: (_req: Request, limit: number, token: string) => 
       new Promise<void>((resolve, reject) => {
-        const tokenCount = (tokenCache.get(token) as number[]) || [0];
-        if (tokenCount[0] === 0) {
-          tokenCache.set(token, [1]);
+        const now = Date.now();
+        const entry = tokenCache.get(token);
+        if (!entry || entry.expiry < now) {
+          if (tokenCache.size >= max) {
+            const firstKey = tokenCache.keys().next().value;
+            if (firstKey) tokenCache.delete(firstKey);
+          }
+          tokenCache.set(token, { count: 1, expiry: now + ttl });
+          resolve();
         } else {
-          tokenCount[0] += 1;
-          tokenCache.set(token, tokenCount);
+          entry.count += 1;
+          if (entry.count > limit) {
+            reject();
+          } else {
+            resolve();
+          }
         }
-        tokenCount[0] > limit ? reject() : resolve();
       }),
   };
 }
+

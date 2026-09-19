@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "build:static": "cross-env NODE_ENV=production next build",
     "export": "next export",
-    "start": "next start",
+    "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "next lint",
     "test": "jest -c jest.config.ts",
     "preview": "npx serve out",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.0",
+    "@google/genai": "^2.23.0",
     "@headlessui/react": "^2.2.9",
     "@react-pdf/renderer": "^4.3.1",
     "@react-three/drei": "^9.102.0",

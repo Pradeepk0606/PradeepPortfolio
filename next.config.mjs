@@ -7,7 +7,7 @@ const nextConfig = {
   // Only apply GitHub Pages options when explicitly targeting gh-pages
   basePath: isGhPages ? '/PradeepPortfolio' : '',
   trailingSlash: isGhPages ? true : false,
-  output: isGhPages ? 'export' : undefined,
+  output: isGhPages ? 'export' : 'standalone',
   images: {
     domains: ['images.unsplash.com', 'source.unsplash.com'],
     formats: ['image/avif', 'image/webp'],

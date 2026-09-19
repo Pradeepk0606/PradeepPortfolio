@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 // SheetBest JSON endpoint used as the LinkedIn feed source
 // Configure via SHEETBEST_URL; will fallback to a default if not set.
 export async function GET() {

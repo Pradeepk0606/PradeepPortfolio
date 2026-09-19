@@ -19,7 +19,8 @@ if (!global.mongoose) {
 
 async function connectDB() {
   if (!MONGODB_URI) {
-    throw new Error("MONGODB_URI not configured");
+    console.warn("MONGODB_URI not configured — database features disabled");
+    return null;
   }
   if (cached.conn) {
     return cached.conn;
@@ -29,15 +30,20 @@ async function connectDB() {
     const opts = {
       bufferCommands: false,
     };
+    mongoose.set('bufferCommands', false);
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts);
+    cached.promise = mongoose.connect(MONGODB_URI, opts).catch((err) => {
+      console.warn("MongoDB connection failed:", err);
+      return null as any;
+    });
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    throw e;
+    console.warn("MongoDB connect error:", e);
+    return null;
   }
 
   return cached.conn;
